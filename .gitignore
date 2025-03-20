@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 /server/tracker.csv
+
+/server/__pycache__/
+node_modules

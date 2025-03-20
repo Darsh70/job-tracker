@@ -2,15 +2,15 @@ import { Button, styled } from '@mui/material';
 import React from 'react';
 
 const NeoBrutalistButton = styled(Button)(({ theme }) => ({
-  /* Base button styles */
+
   position: 'relative',
-  borderRadius: '0.4em', // Further reduced border radius
+  borderRadius: '0.4em', 
   background: '#000000',
   border: 'none',
   cursor: 'pointer',
   fontWeight: 'bold',
-  fontSize: '11px', // Smaller font size
-  padding: '0.3em 0.6em', // Reduced padding
+  fontSize: '11px', 
+  padding: '0.3em 0.6em', 
   boxShadow: 'none',
   textTransform: 'none',
   '&:hover': {
@@ -25,10 +25,10 @@ const NeoBrutalistButton = styled(Button)(({ theme }) => ({
     height: '100%',
     background: '#ffffff',
     border: '2px solid #000000',
-    borderBottom: '4px solid #000000', // Stronger bottom border on hover
-    borderRadius: '0.4em', // Reduced border radius
+    borderBottom: '4px solid #000000', 
+    borderRadius: '0.4em', 
     transform: 'translateY(-0.2em)',
-    transition: 'transform 0.1s ease, border-bottom 0.1s ease', // Smooth transition for border
+    transition: 'transform 0.1s ease, border-bottom 0.1s ease', 
     zIndex: 1,
   },
   '& .MuiButton-label': {

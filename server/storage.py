@@ -6,7 +6,7 @@ csv_file = "tracker.csv"
 
 def store_job(job_title, company_name, location, job_description, job_link):
     file_exists = os.path.exists(csv_file)
-    # Reordered field names to put Job Description at the end
+
     field_names = ["Job Title", "Company Name", "Location", "Job Link", "Date Applied", "Status", "Job Description"]
     
     with open(csv_file, "a", newline="", encoding="utf-8") as f:
