@@ -49,16 +49,18 @@ def scrape_linkedIn(url):
     return job_title, company_name, location, job_description, url
 
 def scrape_greenhouse(url):
+    
     response = requests.get(url)
     response.raise_for_status()
     soup = BeautifulSoup(response.text, "html.parser")
     
-    job_title = clean_text(soup.find("h1", class_="app-title").text if soup.find("h1", class_="app-title") else None)
-    company_name = urlparse(url).netloc.split('.')[0].capitalize()
-    location = clean_text(soup.find("div", class_="location").text if soup.find("div", class_="location") else None)
+    job_title = clean_text(soup.find("h1", class_="section-header").text if soup.find("h1", class_="section-header") else None)
+    company_name = urlparse(url).path.split("/")[1]
+    location = clean_text(soup.find("div", class_="job__location").text if soup.find("div", class_="job__location") else None)
 
-    desc_div = soup.find("div", id="content")
+    desc_div = soup.find("div", class_="job__description")
     job_description = clean_text(desc_div.text) if desc_div else "N/A"
+    print(location)
 
     return job_title, company_name, location, job_description
 

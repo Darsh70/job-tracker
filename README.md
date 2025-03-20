@@ -14,6 +14,7 @@ A chrome extension that allows users to track and manage the jobs they applied t
 - Chrome extension allowing users to easily send job links to the backend.
 - Scraper that scrapes the job posting, identifying job title, company name, location, and description.
 - CSV storage to save job details (job title, company name, location, date applied, status and description).
+- Web interface with sorting and pagination.
 - Real-time update to the table and CSV file when a new job is saved or user changes job status.
 - Job analytics coming soon...
 
