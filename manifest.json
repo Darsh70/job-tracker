@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Job Tracker",
+  "description": "Track job applications from LinkedIn and Greenhouse",
+  "version": "1.0",
+  "action": {
+    "default_popup": "/popup/popup.html"
+  },
+  "permissions": [
+    "activeTab",
+    "tabs"
+  ],
+  "host_permissions": [
+    "http://localhost:5001/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  }
+}
