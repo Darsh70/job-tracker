@@ -26,4 +26,6 @@ dist-ssr
 /server/tracker.csv
 
 /server/__pycache__/
-node_modules
+__pycache__
+tracker.db
+/server/sql_query.py

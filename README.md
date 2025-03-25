@@ -3,10 +3,13 @@
 A chrome extension that allows users to track and manage the jobs they applied to. The extension scrapes the job details, saves it in a CSV, and displays it on a table, allowing users to make changes to the status of their job application.
 
 ## UI
-### Chrome Extension Popup [Chrome Extension Popup]
+
+### Demo
+![Demo](src/assets/Demo.gif)
+### Chrome Extension Popup 
 ![SS2](src/assets/SS2.png)
 
-### Web Interface [Web Interface]
+### Web Interface
 ![SS1](src/assets/SS1.png)
 
 

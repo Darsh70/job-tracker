@@ -5,6 +5,7 @@ import StatusCell from '../components/statusCell';
 import { Chip, ThemeProvider } from '@mui/material';
 import { neoBrutalistTheme} from '../components/JobTableStyles';
 import NeoBrutalistButton from '../components/JobLinkButton';
+import DescriptionPopper from '../components/DescriptionPopper';
 
 function useJobsData() {
   const [jobs, setJobs] = useState([]);
@@ -47,12 +48,8 @@ function useJobsData() {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        title: job.title,
-        company: job.company,
-        location: job.location,
-        date: job.date,
         status: newStatus,
-        link: job.link
+        url: job.link
       })
     })
       .then(response => {
@@ -115,7 +112,7 @@ export default function JobTable() {
           {params.value}
           {params.row.daysSinceApplied !== null && (
             <Chip 
-              label={`${params.row.daysSinceApplied}d`} 
+              label={`${params.row.daysSinceApplied}D`} 
               color="secondary" 
               size="small" 
               sx={{ height: '20px', minWidth: '36px' }}
@@ -137,6 +134,16 @@ export default function JobTable() {
           api={params.api}
           updateStatus={updateJobStatus}
         />
+      )
+    },
+    {
+      field: 'description',
+      headerName: 'Description',
+      flex: 1.5,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: (params) => (
+        <DescriptionPopper description={params.value} />
       )
     },
     {
@@ -184,6 +191,12 @@ export default function JobTable() {
             '& .MuiDataGrid-row': {
               display: 'flex',
               alignItems: 'center',
+            },
+            '& .MuiDataGrid-cell:focus': {
+              outline: 'none',
+             },
+            '& .MuiDataGrid-cell:focus-within': {
+              outline: 'none',
             },
             
           }}
