@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import re
-from storage import store_job
+from sql_storage import store_job
 from datetime import date
 from urllib.parse import urlparse
 
@@ -20,18 +20,19 @@ def scrape_linkedIn(url):
     if job_id:
         url = f"https://www.linkedin.com/jobs/view/{job_id}/"
     
-    # Fetch and parse the page
+    
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
     response = requests.get(url, headers=headers)
     response.raise_for_status()
     soup = BeautifulSoup(response.text, "html.parser")
     
-  
     title_text = soup.title.text if soup.title else None
     match = re.search(r'(.+) hiring (.+) in (.+) \| LinkedIn', title_text)
     
     if match:
         company_name, job_title, location = match.groups()
+
+    # Targeting specific classes as fallback
     else:
         job_title = clean_text(soup.find("h1", class_="top-card-layout__title").text if soup.find("h1", class_="top-card-layout__title") else None)
         company_name = clean_text(soup.find("a", class_="topcard__org-name-link").text if soup.find("a", class_="topcard__org-name-link") else None)
@@ -44,7 +45,7 @@ def scrape_linkedIn(url):
     
 
     desc_div = soup.find("div", class_="show-more-less-html__markup")
-    job_description = clean_text(desc_div.text) if desc_div else "N/A"
+    job_description = str(desc_div) if desc_div else "N/A" # Get description with html tags 
     
     return job_title, company_name, location, job_description, url
 
@@ -59,8 +60,7 @@ def scrape_greenhouse(url):
     location = clean_text(soup.find("div", class_="job__location").text if soup.find("div", class_="job__location") else None)
 
     desc_div = soup.find("div", class_="job__description")
-    job_description = clean_text(desc_div.text) if desc_div else "N/A"
-    print(location)
+    job_description = str(desc_div) if desc_div else "N/A"
 
     return job_title, company_name, location, job_description
 
@@ -84,7 +84,7 @@ def process_job_url(url):
         if job_title == "N/A" or company_name == "N/A":
             raise ValueError("Failed to extract essential job information")
             
-        store_job(job_title, company_name, location, job_description, url)
+        store_job(job_title, company_name, location, url, job_description)
         
         return {
             "title": job_title,
