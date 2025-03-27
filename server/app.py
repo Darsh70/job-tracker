@@ -83,7 +83,25 @@ def update_status():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
         
+@app.route('/deleteJobs', methods=['POST'])
+def deleteJobs():
+    try:
+        data =request.json
+        job_ids = data.get('ids')
 
+        if not job_ids:
+            return jsonify({'error': 'No Job IDs provided'}), 400
+
+        with sqlite3.connect(DB_FILE) as conn:
+            cursor = conn.cursor()
+            id_placeholders = ",".join(["?"] * len(job_ids))
+            query = f'DELETE FROM jobs WHERE id IN ({id_placeholders})'
+            cursor.execute(query, job_ids)
+            conn.commit()
+            
+        return jsonify({'message': 'Jobs deleted'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
