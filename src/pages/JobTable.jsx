@@ -1,81 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
+import { 
+  ThemeProvider, 
+  DialogContent, 
+  DialogContentText, 
+  DialogActions,
+  Chip 
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import StatusCell from '../components/statusCell';
-import { Chip, ThemeProvider } from '@mui/material';
-import { neoBrutalistTheme} from '../components/JobTableStyles';
-import NeoBrutalistButton from '../components/JobLinkButton';
+import { neoBrutalistTheme } from '../components/JobTableStyles';
 import DescriptionPopper from '../components/DescriptionPopper';
+import { useJobsData } from '../hooks/useJobsData';
+import { 
+  NeoBrutalistFab, 
+  NeoBrutalistDialog, 
+  NeoBrutalistDialogTitle, 
+  NeoBrutalistDialogButton,
+  NeoBrutalistBasicButtonComponent 
+} from '../components/NeoBrutalistComponents';
 
-function useJobsData() {
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  
-  const calculateDaysSince = (dateString) => {
-    if (!dateString) return null;
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = Math.abs(now - date);
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
-  
-  const fetchJobs = () => {
-    fetch('http://localhost:5001/getJobs')
-      .then(response => response.json())
-      .then(data => {
-        const jobsWithId = data.map((job, index) => ({
-          id: index,
-          ...job,
-          daysSinceApplied: job.date ? calculateDaysSince(job.date) : null
-        }));
-        setJobs(jobsWithId);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching jobs:', error);
-        setLoading(false);
-      });
-  };
-  
-  const updateJobStatus = (jobId, job, newStatus) => {
-    setJobs(prevJobs =>
-      prevJobs.map(j =>
-        j.id === jobId ? { ...j, status: newStatus } : j
-      )
-    );
-    fetch('http://localhost:5001/updateStatus', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        status: newStatus,
-        url: job.link
-      })
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to update job status');
-        }
-        return response.json();
-      })
-      .catch(error => {
-        console.error('Error updating job status:', error);
-        fetchJobs();
-      });
-  };
-  
-  useEffect(() => {
-    fetchJobs();
-    const interval = setInterval(fetchJobs, 10000);
-    return () => clearInterval(interval);
-  }, []);
-  
-  return { jobs, loading, updateJobStatus };
-}
 
 export default function JobTable() {
-  const { jobs, loading, updateJobStatus } = useJobsData();
-  
+  const { jobs, loading, updateJobStatus, deleteJobs } = useJobsData();
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   const columns = [
     { 
       field: 'title', 
@@ -110,10 +61,10 @@ export default function JobTable() {
       renderCell: (params) => (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {params.value}
-          {params.row.daysSinceApplied !== null && (
+          {params.row.daysSinceApplied !== null && ( // Displays 'days ago'
             <Chip 
               label={`${params.row.daysSinceApplied}D`} 
-              color="secondary" 
+              color="primary" 
               size="small" 
               sx={{ height: '20px', minWidth: '36px' }}
             />
@@ -153,17 +104,22 @@ export default function JobTable() {
       headerAlign: 'center',
       align: 'center',
       renderCell: (params) => (
-        <NeoBrutalistButton 
+        <NeoBrutalistBasicButtonComponent 
           href={params.value} 
           target="_blank" 
           rel="noopener noreferrer"
-          
         >
           View Job
-        </NeoBrutalistButton>
+        </NeoBrutalistBasicButtonComponent>
       )
     },
   ];
+
+  const handleDeleteConfirmation = () => {
+    deleteJobs(selectedRows);
+    setIsDeleteModalOpen(false);
+    setSelectedRows([]);
+  };
   
   return (
     <ThemeProvider theme={neoBrutalistTheme}>
@@ -171,36 +127,85 @@ export default function JobTable() {
         width: '100%', 
         padding: '2px',
         backgroundColor: '#90A8EB',
-        
+        position: 'relative',
       }}>
         <DataGrid
-          rows={jobs}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: { pageSize: 100 }
-            },
-          }}
-          pageSizeOptions={[5, 10, 20, 100]}
-          loading={loading}
-          checkboxSelection
-          disableRowSelectionOnClick
-          autoHeight
-          disableColumnMenu
-          sx={{
-            '& .MuiDataGrid-row': {
-              display: 'flex',
-              alignItems: 'center',
-            },
-            '& .MuiDataGrid-cell:focus': {
-              outline: 'none',
+           rows={jobs}
+           columns={columns}
+           initialState={{
+             pagination: {
+               paginationModel: { pageSize: 100 }
              },
-            '& .MuiDataGrid-cell:focus-within': {
-              outline: 'none',
-            },
-            
-          }}
+           }}
+           pageSizeOptions={[5, 10, 20, 100]}
+           loading={loading}
+           checkboxSelection
+           onRowSelectionModelChange={(newSelectedModel) => setSelectedRows(newSelectedModel)}
+           disableRowSelectionOnClick
+           autoHeight
+           disableColumnMenu
+           sx={{
+             '& .MuiDataGrid-row': {
+               display: 'flex',
+               alignItems: 'center',
+             },
+             '& .MuiDataGrid-cell:focus': {
+               outline: 'none',
+              },
+             '& .MuiDataGrid-cell:focus-within': {
+               outline: 'none',
+             },
+           }}
         />
+
+        {/* Floating Delete Button */}
+        {selectedRows.length > 0 && (
+          <NeoBrutalistFab 
+            aria-label="delete"
+            onClick={() => setIsDeleteModalOpen(true)}
+          >
+            <DeleteIcon />
+          </NeoBrutalistFab>
+        )}
+
+        {/* Confirmation Dialog Popup*/}
+        <NeoBrutalistDialog
+          open={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+        >
+          <NeoBrutalistDialogTitle>
+            Delete Selected Jobs?
+          </NeoBrutalistDialogTitle>
+          <DialogContent>
+            <DialogContentText sx={{ 
+              textAlign: 'center', 
+              color: 'black',
+              fontWeight: 'bold',
+              marginBottom: '16px' 
+            }}>
+              Are you sure you want to delete {selectedRows.length} selected job(s)? 
+              This action cannot be undone.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions sx={{ 
+            justifyContent: 'center', 
+            gap: 2,
+            marginBottom: '16px' 
+          }}>
+            <NeoBrutalistDialogButton 
+              onClick={() => setIsDeleteModalOpen(false)}
+              color="primary"
+            >
+              Cancel
+            </NeoBrutalistDialogButton>
+            <NeoBrutalistDialogButton
+              onClick={handleDeleteConfirmation} 
+              color="error"
+            >
+              Delete
+            </NeoBrutalistDialogButton>
+          </DialogActions>
+        </NeoBrutalistDialog>
       </Box>
     </ThemeProvider>
   );
