@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import DOMPurify from 'dompurify';
 import { Popper, Paper, ClickAwayListener } from '@mui/material';
-import NeoBrutalistButton from './JobLinkButton';
+import { NeoBrutalistBasicButtonComponent } from './NeoBrutalistComponents';
 
-// Internal Popper Component 
+// Add description in popper
 const PopperContent = ({ description, open, anchorEl, handleClose }) => {
   const sanitizedDescription = DOMPurify.sanitize(description || ''); // Prevent null errors
 
@@ -16,7 +16,7 @@ const PopperContent = ({ description, open, anchorEl, handleClose }) => {
         {
           name: 'offset',
           options: {
-            offset: [10, 10], // Slightly adjusted for better spacing
+            offset: [10, 10], 
           },
         },
       ]}
@@ -33,15 +33,16 @@ const PopperContent = ({ description, open, anchorEl, handleClose }) => {
             border: '2px solid #000',
             boxShadow: '4px 4px 0px #000',
           }}
-        > 
-          <div style={{ paddingLeft: '8px' }} dangerouslySetInnerHTML={{ __html: sanitizedDescription }} />  
+        >  
+          <div style={{ paddingLeft: '8px' }} dangerouslySetInnerHTML={{ __html: sanitizedDescription }} />  {/*Render HTML tags*/}
         </Paper> 
       </ClickAwayListener>
     </Popper>
   ); 
 };
 
-// Main Component
+
+
 const DescriptionPopper = ({ description }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -56,9 +57,9 @@ const DescriptionPopper = ({ description }) => {
 
   return (
     <>
-      <NeoBrutalistButton onClick={handleClick}>
+      <NeoBrutalistBasicButtonComponent  onClick={handleClick}>
         {open ? 'Close' : 'Description'}
-      </NeoBrutalistButton>
+      </NeoBrutalistBasicButtonComponent>
       <PopperContent 
         description={description} 
         open={open} 
