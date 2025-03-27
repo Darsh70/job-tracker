@@ -63,13 +63,6 @@ export const neoBrutalistTheme = createTheme({
             backgroundColor: '#264653',
           },
         },
-        colorSecondary: {
-          backgroundColor: '#2A9D8F', // Days chip background
-          color: '#fff',
-          '&:hover': {
-            backgroundColor: '#264653',
-          },
-        },
       },
     },
   },
