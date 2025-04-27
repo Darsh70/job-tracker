@@ -3,11 +3,6 @@ from datetime import date
 
 db_file = "tracker.db"
 
-import sqlite3
-from datetime import date
-
-db_file = "tracker.db"
-
 def create_table():
     with sqlite3.connect(db_file) as conn:
         cursor = conn.cursor()
