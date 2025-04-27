@@ -2,7 +2,7 @@ import { createTheme } from '@mui/material';
 
 export const neoBrutalistTheme = createTheme({
   typography: {
-    fontFamily: 'Roboto, Arial, sans-serif',  
+    fontFamily: 'Roboto, Arial, sans-serif',
   },
   components: {
     MuiDataGrid: {
@@ -23,7 +23,7 @@ export const neoBrutalistTheme = createTheme({
             alignItems: 'center',
           },
           '& .MuiDataGrid-row:hover': {
-            backgroundColor: '#F4A261', 
+            backgroundColor: '#F4A261',
           },
           '& .MuiDataGrid-columnSeparator': {
             display: 'none',
@@ -57,7 +57,7 @@ export const neoBrutalistTheme = createTheme({
           fontSize: '0.7rem',
         },
         colorPrimary: {
-          backgroundColor: '#2A9D8F', // Location chip background
+          backgroundColor: '#2A9D8F', // chip background
           color: '#ffffff',
           '&:hover': {
             backgroundColor: '#264653',
@@ -65,7 +65,14 @@ export const neoBrutalistTheme = createTheme({
         },
       },
     },
+    // Tooltip styles
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          backgroundColor: '#264653', 
+          color: '#fff', 
+        },
+      },
+    },
   },
 });
-
-
