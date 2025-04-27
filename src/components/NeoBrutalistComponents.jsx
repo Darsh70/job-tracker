@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from '@mui/material';
+import { colors, styled } from '@mui/material';
 import Box from '@mui/material/Box';
 import { 
   Dialog, 
@@ -89,17 +89,17 @@ export const NeoBrutalistDialogTitle = ({ children, ...props }) => {
 
 export const NeoBrutalistDialogButton = ({ children, color, ...props }) => {
   const buttonColors = {
-    error: {
-      bg: '#d84646',
+    delete: {
+      bg: '#FF6B6B',
       border: '#000',
     },
-    primary: {
-      bg: '#2A9D8F',
+    cancel: {
+      bg: '#289D8F',
       border: '#000',
     }
   };
 
-  const colorScheme = buttonColors[color] || buttonColors.primary;
+  const colorScheme = buttonColors[color] || buttonColors.cancel;
 
   return (
     <Button
@@ -131,16 +131,11 @@ const NeoBrutalistBasicButton = styled(Button)(({ theme }) => ({
     position: 'relative',
     borderRadius: '0.4em',
     background: '#000000',
-    border: 'none',
     cursor: 'pointer',
     fontWeight: 'bold',
     fontSize: '11px',
-    padding: '0.3em 0.6em',
-    boxShadow: 'none',
+    padding: '0.3em 0.6em 0.5em',
     textTransform: 'none',
-    '&:hover': {
-      background: '#000000',
-    },
     '&::before': {
       content: '""',
       position: 'absolute',
@@ -148,9 +143,9 @@ const NeoBrutalistBasicButton = styled(Button)(({ theme }) => ({
       left: '0',
       width: '100%',
       height: '100%',
-      background: '#ffffff',
+      background: '#F8F5F1',
       border: '2px solid #000000',
-      borderBottom: '4px solid #000000',
+      borderBottom: '2px solid #000000',
       borderRadius: '0.4em',
       transform: 'translateY(-0.2em)',
       transition: 'transform 0.1s ease, border-bottom 0.1s ease',
@@ -168,6 +163,7 @@ const NeoBrutalistBasicButton = styled(Button)(({ theme }) => ({
     },
     '&:active::before': {
       transform: 'translateY(0)',
+
     },
     '&:hover .MuiButton-label': {
       transform: 'translateY(-0.1em)',
@@ -184,3 +180,35 @@ const NeoBrutalistBasicButton = styled(Button)(({ theme }) => ({
       </NeoBrutalistBasicButton>
     );
   };
+
+
+  export const ChartHeader = ({ text, backgroundColor = '#90A8EB' }) => {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          marginTop: '20px',
+          marginBottom: '20px',
+        }}
+      >
+        <h2
+          style={{
+            color: '#fff',
+            fontWeight: 'bold',
+            borderBottom: '2px solid #000',
+            padding: '4px',
+            fontSize: '18px',
+            letterSpacing: '2px',
+            backgroundColor: backgroundColor,
+          }}
+        >
+          {text}
+        </h2>
+      </Box>
+    );
+  };
+  
+ 
